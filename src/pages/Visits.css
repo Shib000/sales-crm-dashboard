@@ -1,0 +1,53 @@
+.visits-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.visits-table-container {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.visits-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.visits-table thead {
+  background: #f5f5f5;
+}
+
+.visits-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.visits-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e5e5e5;
+  color: #666;
+}
+
+.visits-table tr:hover {
+  background: #f9f9f9;
+}
+
+.btn-checkout {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-checkout:hover {
+  background: #d97706;
+}

@@ -1,0 +1,104 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 20px 0;
+  flex: 1;
+}
+
+.nav-menu li {
+  margin: 0;
+}
+
+.nav-menu a {
+  display: block;
+  padding: 15px 20px;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.3s;
+  border-left: 3px solid transparent;
+}
+
+.nav-menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: white;
+}
+
+.nav-menu a.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-left-color: white;
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-info {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-info span:first-child {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background: #f5f5f5;
+}
