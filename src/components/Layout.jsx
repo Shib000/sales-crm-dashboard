@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Layout.css'
@@ -5,6 +6,7 @@ import './Layout.css'
 export default function Layout() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -15,37 +17,56 @@ export default function Layout() {
   const isManager = user?.role === 'manager'
   const isExecutive = user?.role === 'executive'
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+  }
+
   return (
     <div className="layout">
-      <nav className="sidebar">
+      <button 
+        className="mobile-menu-toggle"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {mobileMenuOpen && (
+        <div className="mobile-overlay" onClick={closeMobileMenu}></div>
+      )}
+
+      <nav className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <h2>Sales CRM</h2>
+          <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
         </div>
         <ul className="nav-menu">
           <li>
-            <NavLink to="/" end>Dashboard</NavLink>
+            <NavLink to="/" end onClick={closeMobileMenu}>Dashboard</NavLink>
           </li>
           <li>
-            <NavLink to="/leads">Leads</NavLink>
+            <NavLink to="/leads" onClick={closeMobileMenu}>Leads</NavLink>
           </li>
           <li>
-            <NavLink to="/visits">Visits</NavLink>
+            <NavLink to="/visits" onClick={closeMobileMenu}>Visits</NavLink>
           </li>
           {(isAdmin || isManager) && (
             <li>
-              <NavLink to="/sites">Sites</NavLink>
+              <NavLink to="/sites" onClick={closeMobileMenu}>Sites</NavLink>
             </li>
           )}
           {(isAdmin || isManager) && (
             <li>
-              <NavLink to="/employees">Employees</NavLink>
+              <NavLink to="/employees" onClick={closeMobileMenu}>Employees</NavLink>
             </li>
           )}
           <li>
-            <NavLink to="/analytics">Analytics</NavLink>
+            <NavLink to="/analytics" onClick={closeMobileMenu}>Analytics</NavLink>
           </li>
           <li>
-            <NavLink to="/profile">Profile</NavLink>
+            <NavLink to="/profile" onClick={closeMobileMenu}>Profile</NavLink>
           </li>
         </ul>
         <div className="sidebar-footer">
