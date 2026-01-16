@@ -230,12 +230,36 @@ src/
 - AI-based lead scoring
 - Predictive analytics
 
+## 🚀 Deployment
+
+### Netlify Deployment
+
+The project is configured for Netlify deployment with proper SPA routing support.
+
+**Important**: The project includes:
+- `netlify.toml` - Netlify configuration file
+- `public/_redirects` - Redirect rules for SPA routing
+
+**Deployment Steps**:
+1. Build the project: `npm run build`
+2. Deploy to Netlify (via CLI, GitHub, or drag-and-drop)
+3. Netlify will automatically detect the build settings from `netlify.toml`
+
+**Fixing 404 Errors on Mobile/Direct Access**:
+If you're experiencing 404 errors when accessing routes directly (especially on mobile), ensure:
+- The `public/_redirects` file exists (it's included in the project)
+- The `netlify.toml` file is in the root directory
+- After deploying, the redirect rules will handle all routes properly
+
+The redirect rule (`/* /index.html 200`) tells Netlify to serve `index.html` for all routes, allowing React Router to handle client-side routing.
+
 ## 📝 Notes
 
 - This is a frontend-only implementation using localStorage for data persistence
 - In a production environment, you would replace the dataService with API calls to a backend
 - Location tracking requires browser permissions
 - The system includes sample data for demonstration purposes
+- For Netlify deployment, the `_redirects` file ensures proper SPA routing on all devices
 
 ## 🤝 Contributing
 
