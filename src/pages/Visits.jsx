@@ -9,6 +9,9 @@ export default function Visits() {
   const [visits, setVisits] = useState([])
   const [showCheckinModal, setShowCheckinModal] = useState(false)
   const [checkingLocation, setCheckingLocation] = useState(false)
+  const [showCreateLeadModal, setShowCreateLeadModal] = useState(false)
+  const [verifiedLocation, setVerifiedLocation] = useState(null)
+  const [verifiedSite, setVerifiedSite] = useState(null)
 
   useEffect(() => {
     loadVisits()
@@ -62,18 +65,23 @@ export default function Visits() {
         return
       }
 
+      // Store verified location and site for potential lead creation
+      setVerifiedLocation(location)
+      setVerifiedSite(site)
+
       // Find active lead or create visit
       const leads = dataService.getLeads().filter(
         l => l.assignedExecutiveId === user.id && l.siteId === assignedSiteId
       )
 
       if (leads.length === 0) {
-        alert('No leads found for this site. Please create a lead first.')
+        // Allow creating a lead during on-site visit (as per requirements)
+        setShowCreateLeadModal(true)
         setCheckingLocation(false)
         return
       }
 
-      // Create visit
+      // Create visit with existing lead
       const visit = dataService.createVisit({
         leadId: leads[0].id,
         executiveId: user.id,
@@ -185,7 +193,135 @@ export default function Visits() {
           </tbody>
         </table>
       </div>
+
+      {showCreateLeadModal && (
+        <CreateLeadDuringVisitModal
+          site={verifiedSite}
+          location={verifiedLocation}
+          onClose={() => {
+            setShowCreateLeadModal(false)
+            setVerifiedLocation(null)
+            setVerifiedSite(null)
+          }}
+          onSave={(leadData) => {
+            // Create the lead
+            const newLead = dataService.createLead({
+              ...leadData,
+              assignedExecutiveId: user.id,
+              siteId: verifiedSite.id,
+              status: 'New'
+            })
+
+            // Create visit immediately
+            const visit = dataService.createVisit({
+              leadId: newLead.id,
+              executiveId: user.id,
+              siteId: verifiedSite.id,
+              checkinTime: new Date().toISOString(),
+              locationVerified: true,
+              latitude: verifiedLocation.latitude,
+              longitude: verifiedLocation.longitude
+            })
+
+            // Update lead status to Visit Done
+            dataService.updateLead(newLead.id, { status: 'Visit Done' })
+
+            setShowCreateLeadModal(false)
+            setVerifiedLocation(null)
+            setVerifiedSite(null)
+            loadVisits()
+            alert('Lead created and visit logged successfully!')
+          }}
+        />
+      )}
     </div>
   )
 }
+
+function CreateLeadDuringVisitModal({ site, location, onClose, onSave }) {
+  const [formData, setFormData] = useState({
+    clientName: '',
+    phone: '',
+    email: '',
+    leadSource: 'Walk-in'
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (formData.clientName && formData.phone) {
+      onSave(formData)
+    } else {
+      alert('Please fill in client name and phone number')
+    }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>Create Lead During Visit</h2>
+        <p style={{ marginBottom: '20px', color: '#666', fontSize: '14px' }}>
+          You're checked in at <strong>{site?.name}</strong>. Create a new lead for this visit.
+        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Client Name *</label>
+            <input
+              type="text"
+              value={formData.clientName}
+              onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+              required
+              placeholder="Enter client name"
+              autoFocus
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Phone Number *</label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              required
+              placeholder="Enter phone number"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="Enter email (optional)"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Lead Source *</label>
+            <select
+              value={formData.leadSource}
+              onChange={(e) => setFormData({ ...formData, leadSource: e.target.value })}
+              required
+            >
+              <option value="Walk-in">Walk-in</option>
+              <option value="Campaign">Campaign</option>
+              <option value="Referral">Referral</option>
+            </select>
+          </div>
+
+          <div className="modal-actions">
+            <button type="button" onClick={onClose} className="btn-secondary">
+              Cancel
+            </button>
+            <button type="submit" className="btn-primary">
+              Create Lead & Log Visit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+
 

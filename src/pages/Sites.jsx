@@ -43,10 +43,13 @@ export default function Sites() {
     const visits = dataService.getVisits().filter(v => v.siteId === siteId)
     const bookings = dataService.getBookings().filter(b => b.siteId === siteId)
     const revenue = bookings.reduce((sum, b) => sum + (b.amount || 0), 0)
+    // Meetings are visits where a client meeting occurred (visits with checkout = completed meetings)
+    const meetings = visits.filter(v => v.checkoutTime).length
 
     return {
       totalLeads: leads.length,
       totalVisits: visits.length,
+      meetings: meetings,
       totalBookings: bookings.length,
       revenue
     }
@@ -93,6 +96,10 @@ export default function Sites() {
                 <div className="stat-item">
                   <span className="stat-value">{stats.totalVisits}</span>
                   <span className="stat-label">Visits</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value">{stats.meetings}</span>
+                  <span className="stat-label">Meetings</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-value">{stats.totalBookings}</span>
@@ -198,4 +205,6 @@ function SiteModal({ site, onClose, onSave }) {
     </div>
   )
 }
+
+
 
